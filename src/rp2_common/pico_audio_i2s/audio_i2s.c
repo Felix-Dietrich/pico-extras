@@ -86,7 +86,7 @@ const audio_format_t *audio_i2s_setup(const audio_format_t *intended_audio_forma
 
 static audio_buffer_pool_t *audio_i2s_consumer;
 
-static void update_pio_frequency(uint32_t sample_freq) {
+void update_pio_frequency(uint32_t sample_freq) {
     uint32_t system_clock_frequency = clock_get_hz(clk_sys);
     assert(system_clock_frequency < 0x40000000);
     uint32_t divider = system_clock_frequency * 4 / sample_freq; // avoid arithmetic overflow
@@ -97,9 +97,9 @@ static void update_pio_frequency(uint32_t sample_freq) {
 
 static audio_buffer_t *wrap_consumer_take(audio_connection_t *connection, bool block) {
     // support dynamic frequency shifting
-    if (connection->producer_pool->format->sample_freq != shared_state.freq) {
+    /*if (connection->producer_pool->format->sample_freq != shared_state.freq) {
         update_pio_frequency(connection->producer_pool->format->sample_freq);
-    }
+    }*/
 #if PICO_AUDIO_I2S_MONO_INPUT
 #if PICO_AUDIO_I2S_MONO_OUTPUT
     return mono_to_mono_consumer_take(connection, block);
@@ -117,9 +117,9 @@ static audio_buffer_t *wrap_consumer_take(audio_connection_t *connection, bool b
 
 static void wrap_producer_give(audio_connection_t *connection, audio_buffer_t *buffer) {
     // support dynamic frequency shifting
-    if (connection->producer_pool->format->sample_freq != shared_state.freq) {
+    /*if (connection->producer_pool->format->sample_freq != shared_state.freq) {
         update_pio_frequency(connection->producer_pool->format->sample_freq);
-    }
+    }*/
 #if PICO_AUDIO_I2S_MONO_INPUT
 #if PICO_AUDIO_I2S_MONO_OUTPUT
     assert(false);
